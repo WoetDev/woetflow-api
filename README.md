@@ -14,31 +14,7 @@ Ruby 2.7.2
 * Redis
 
 ## Configuration
-Add cookies middleware in application config & controller for authentication
-
-config/application.rb:
-```
-module WoetflowApi
-  class Application < Rails::Application
-    ...
-
-    config.middleware.use ActionDispatch::Cookies
-    config.middleware.use ActionDispatch::Session::CookieStore
-  end
-end
-```
-
-controllers/application_controller.rb:
-```
-class ApplicationController < ActionController::API
-  include ActionController::Cookies
-  include ActionController::RequestForgeryProtection
-
-  protect_from_forgery with: :exception
-
-  ...
-end
-```
+Use of JWTSessions gem with cookies for XSS & CSRF safe authentication
 
 ## Database creation (PostgreSQL)
 Created database user 'barry' with password
@@ -96,6 +72,23 @@ Run all tests
 rspec
 ```
 
-## Services (job queues, cache servers, search engines, etc.)
+## Services
+JWTSessions gem uses Redis as the default token store
+
+Check if redis-server is running
+```
+sudo service redis-server status
+```
+
+Force restart redis-server
+```
+sudo service redis-server restart
+```
+
+Stop/start redis-server
+```
+sudo service redis-server stop
+sudo service redis-server start
+```
 
 ## Deployment instructions
