@@ -16,6 +16,7 @@ gem 'jwt_sessions', '~> 2.5', '>= 2.5.2'
 gem 'redis', '~> 4.0'
 # Use Active Model has_secure_password
 gem 'bcrypt', '~> 3.1.7'
+gem 'friendly_id', '~> 5.4', '>= 5.4.2'
 
 # Use Active Storage variant
 # gem 'image_processing', '~> 1.2'
@@ -31,6 +32,7 @@ group :development, :test do
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
   gem 'rspec-rails'
   gem 'factory_bot_rails'
+  gem 'hirb', '~> 0.7.3'
 end
 
 group :development do

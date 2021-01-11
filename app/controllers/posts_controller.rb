@@ -1,16 +1,17 @@
 class PostsController < ApplicationController
-  before_action :authorize_access_request!
-  before_action :set_post, only: [:show, :update, :destroy]
+  before_action :authorize_access_request!, except: [:index, :show]
+  before_action :set_post, only: [:update, :destroy]
 
   # GET /posts
   def index
-    @posts = current_user.posts
+    @posts = Post.all
 
     render json: @posts
   end
 
   # GET /posts/1
   def show
+    @post = Post.friendly.find(params[:id])
     render json: @post
   end
 
@@ -42,10 +43,10 @@ class PostsController < ApplicationController
   private
 
   def set_post
-    @post = current_user.posts.find(params[:id])
+    @post = current_user.posts.friendly.find(params[:id])
   end
 
   def post_params
-    params.require(:post).permit(:title, :content, :cover_url)
+    params.require(:post).permit(:title, :summary, :content, :cover_url)
   end
 end

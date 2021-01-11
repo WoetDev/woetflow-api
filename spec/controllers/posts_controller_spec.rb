@@ -6,6 +6,7 @@ RSpec.describe PostsController, type: :controller do
   let(:valid_attributes) {
     { 
       title: 'new title',
+      summary: 'short description about the post',
       content: 'new content',
       cover_url: 'http://example.com/image'
     }
@@ -14,7 +15,9 @@ RSpec.describe PostsController, type: :controller do
   let(:invalid_attributes) {
     { 
       title: nil,
+      summary: nil,
       content: nil,
+      slug: nil,
       cover_url: nil
     }
   }
@@ -28,20 +31,16 @@ RSpec.describe PostsController, type: :controller do
   describe 'GET #index' do
     let!(:post) { create(:post, user: user) }
 
-    it 'returns a success response' do
-      request.cookies[JWTSessions.access_cookie] = @tokens[:access]
+    it 'authorized without cookie' do
+      get :index
+      expect(response).to have_http_status(200)
+    end
+    
+    it 'returns a success response' do      
       get :index
       expect(response).to be_successful
       expect(response_json.size).to eq 1
       expect(response_json.first['id']).to eq post.id
-    end
-
-    # usually there's no need to test this kind of stuff 
-    # within the resources endpoints
-    # the quick spec is here only for the presentation purposes
-    it 'unauth without cookie' do
-      get :index
-      expect(response).to have_http_status(401)
     end
   end
 
@@ -49,7 +48,6 @@ RSpec.describe PostsController, type: :controller do
     let!(:post) { create(:post, user: user) }
 
     it 'returns a success response' do
-      request.cookies[JWTSessions.access_cookie] = @tokens[:access]
       get :show, params: { id: post.id }
       expect(response).to be_successful
     end
@@ -75,8 +73,14 @@ RSpec.describe PostsController, type: :controller do
         expect(response.location).to eq(post_url(Post.last))
       end
 
-      it 'unauth without CSRF' do
+      it 'unauthorized without CSRF' do
         request.cookies[JWTSessions.access_cookie] = @tokens[:access]
+        post :create, params: { post: valid_attributes }
+        expect(response).to have_http_status(401)
+      end
+
+      it 'unauthorized without Cookie' do
+        request.headers[JWTSessions.csrf_header] = @tokens[:csrf]
         post :create, params: { post: valid_attributes }
         expect(response).to have_http_status(401)
       end
@@ -138,6 +142,22 @@ RSpec.describe PostsController, type: :controller do
       expect {
         delete :destroy, params: { id: post.id }
       }.to change(Post, :count).by(-1)
+    end
+
+    it 'unauthorized without CSRF' do
+      request.cookies[JWTSessions.access_cookie] = @tokens[:access]
+      expect {
+        delete :destroy, params: { id: post.id }
+      }.to change(Post, :count).by(0)
+      expect(response).to have_http_status(401)
+    end
+
+    it 'unauthorized without Cookie' do
+      request.headers[JWTSessions.csrf_header] = @tokens[:csrf]
+      expect {
+        delete :destroy, params: { id: post.id }
+      }.to change(Post, :count).by(0)
+      expect(response).to have_http_status(401)
     end
   end
 end
