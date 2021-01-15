@@ -92,3 +92,7 @@ sudo service redis-server start
 ```
 
 ## Deployment instructions
+Push repository to Heroku
+```
+git push heroku main
+```

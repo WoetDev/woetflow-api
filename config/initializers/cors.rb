@@ -9,7 +9,7 @@ Rails.application.config.action_controller.forgery_protection_origin_check = fal
 
 Rails.application.config.middleware.insert_before 0, Rack::Cors do
   allow do
-    origins 'localhost:8080', 'infallible-liskov-126bb8.netlify.app'
+    origins 'localhost:8080', 'woetflow.netlify.app', 'woetflow.com'
 
     resource '*',
       headers: :any,
