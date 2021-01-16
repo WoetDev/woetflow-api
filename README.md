@@ -92,7 +92,9 @@ sudo service redis-server start
 ```
 
 ## Deployment instructions
-Push repository to Heroku
+Continuous Deployment enabled on main branch
+
+Manually deploy application on Heroku
 ```
 git push heroku main
 ```
