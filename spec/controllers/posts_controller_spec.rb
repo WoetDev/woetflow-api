@@ -93,6 +93,10 @@ RSpec.describe PostsController, type: :controller do
         post :create, params: { post: invalid_attributes }
         expect(response).to have_http_status(:unprocessable_entity)
         expect(response.content_type).to include('application/json')
+        expect(response_json['errors']['title']).to include("can't be blank")
+        expect(response_json['errors']['summary']).to include("can't be blank")
+        expect(response_json['errors']['content']).to include("can't be blank")
+        expect(response_json['errors']['cover_url']).to include("can't be blank")
       end
     end
   end
@@ -129,6 +133,10 @@ RSpec.describe PostsController, type: :controller do
         put :update, params: { id: post.to_param, post: invalid_attributes }
         expect(response).to have_http_status(:unprocessable_entity)
         expect(response.content_type).to include('application/json')
+        expect(response_json['errors']['title']).to include("can't be blank")
+        expect(response_json['errors']['summary']).to include("can't be blank")
+        expect(response_json['errors']['content']).to include("can't be blank")
+        expect(response_json['errors']['cover_url']).to include("can't be blank")
       end
     end
   end
